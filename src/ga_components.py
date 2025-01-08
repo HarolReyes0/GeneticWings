@@ -1,5 +1,6 @@
 import random 
-
+import numpy as np
+import pandas as pd
 
 
 
@@ -22,16 +23,21 @@ class Individual:
 
         # Randomly building the the ecuation that'll be use as genotype.
         for _ in range(n_terms):
-            constant = random.randint(0, 100)
+            constant = random.randint(0, 10)
             operator = random.choice(['-', '+'])
-            term = f'{operator} {constant}x '
+            exponet = random.randint(-10, 10)
+            term = f'{operator} {constant}x**{exponet} '
 
             self._genotype += term
 
+    def _calculate_fitness(self, ecuation: str, x: pd.DataFrame) -> np.array:
+        """
+        """
+        # Making predictions.
+        y_hat = eval(ecuation)
 
-    def _calculate_fitness(self):
-        pass
-
+        # Calculating SSE
+        
     def _mutate(self):
         pass
 
