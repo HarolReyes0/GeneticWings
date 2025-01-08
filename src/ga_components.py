@@ -17,13 +17,14 @@ class Individual:
             Returns:
                 None  
         """
+
         n_terms = random.randint(1, 100)
 
         # Randomly building the the ecuation that'll be use as genotype.
         for _ in range(n_terms):
-            constant = random.randint(-100, 100)
+            constant = random.randint(0, 100)
             operator = random.choice(['-', '+'])
-            term = f'{operator}{constant}x'
+            term = f'{operator} {constant}x '
 
             self._genotype += term
 
@@ -35,4 +36,4 @@ class Individual:
         pass
 
     def get_genotype(self):
-        pass
+        return self._genotype
