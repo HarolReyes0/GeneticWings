@@ -19,24 +19,33 @@ class Individual:
                 None  
         """
 
-        n_terms = random.randint(1, 100)
+        n_terms = random.randint(1, 10)
 
-        # Randomly building the the ecuation that'll be use as genotype.
+        # Randomly creating the the ecuation that'll be use as genotype.
         for _ in range(n_terms):
-            constant = random.randint(0, 10)
+            constant = random.randint(1, 9)
             operator = random.choice(['-', '+'])
-            exponet = random.randint(-10, 10)
-            term = f'{operator} {constant}x**{exponet} '
+            exponet = random.randint(-9, 9)
+            term = f'{operator} {constant} * x**{np.float64(exponet)} '
 
             self._genotype += term
 
-    def _calculate_fitness(self, ecuation: str, x: pd.DataFrame) -> np.array:
+    def _calculate_fitness(self, x: pd.Series) -> np.array:
         """
         """
         # Making predictions.
-        y_hat = eval(ecuation)
+        y_hat = eval(self._genotype)
+
+        # Debugging 
+        print("Features", '\n', x)
+        print("Predictions", '\n', y_hat)
 
         # Calculating SSE
+        error = x.astype("float64") - y_hat 
+        sse = sum(error)
+
+        # return sse
+        return sse
         
     def _mutate(self):
         pass
