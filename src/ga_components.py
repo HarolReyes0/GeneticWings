@@ -4,7 +4,6 @@ import pandas as pd
 import re
 
 # TODO:
-# Create a class to store all fitness methods (SSE, MSE, MAE).
 # Create a class to store all mutation methods ().
 # Create a class to store all crossover methods.
 
