@@ -8,6 +8,80 @@ import re
 # Create a class to store all mutation methods ().
 # Create a class to store all crossover methods.
 
+class FitnessScoreMethods:
+    def _make_predictions(self, x: np.array, f: str) -> np.array:
+        """
+            Generate predictions based on a given function.
+
+            This method evaluates the provided function string `f` using Python's `eval`
+            and calculates the difference between the input array `x` (converted to 
+            float64) and the evaluated predictions.
+
+            Parameters:
+                x (np.array): Input array of numerical features.
+                f (str): A string representing the function to generate predictions.
+
+            Returns:
+                np.array: The differences between `x` (starting from the second element)
+                        and the predicted values (excluding the last element).
+        """
+        y_hat = eval(f)
+
+        return x.astype("float64")[1:] - y_hat[:-1]
+    
+    def _sse(self, x: np.array, f: str) -> float:
+        """
+            Calculate the Sum of Squared Errors (SSE) for predictions.
+
+            This method computes the Sum of Squared Errors based on the difference
+            between actual values and predicted values generated using `_make_predictions`.
+
+            Parameters:
+                x (np.array): Input array of numerical features.
+                f (str): A string representing the function to generate predictions.
+
+            Returns:
+            float: The calculated Sum of Squared Errors.
+        """
+        error = self._make_predictions(x, f)
+        
+        return sum(np.square(error))
+    
+    def _mse(self, x: np.array, f: str) -> float:
+        """
+            Calculates the Mean Squared Error (MSE) of the predictions.
+
+            This method computes the Mean Squared Error based on the difference
+            between actual values and predicted values generated using `_make_predictions`.
+
+            Parameters:
+                x (np.array): Input array of numerical features.
+                f (str): A string representing the function to generate predictions.
+
+            Returns:
+            float: The calculated Mean Squared Error.
+        """
+        error = self._make_predictions(x, f)
+        
+        return np.mean(np.square(error))
+    
+    def _mae(self, x: np.array, f: str) -> float:
+        """
+            Calculates the Mean Absolute Error (MAE) of the predictions.
+
+            This method computes the Mean Absolute Error based on the difference
+            between actual values and predicted values generated using `_make_predictions`.
+
+            Parameters:
+                x (np.array): Input array of numerical features.
+                f (str): A string representing the function to generate predictions.
+
+            Returns:
+            float: The calculated Mean Absolute Error.
+        """
+        error = self._make_predictions(x, f)
+        
+        return np.mean(np.abs(error))
 
 
 class Individual:
