@@ -30,18 +30,18 @@ class Individual:
 
             self._genotype += term
 
-    def _calculate_fitness(self, x: pd.Series) -> np.array:
+    def _calculate_fitness(self, x: pd.Series) -> float:
         """
+            Calculates the sum of squared error of the individual.
+
+            Inputs:
+                x(pd.Series): 
         """
         # Making predictions.
         y_hat = eval(self._genotype)
 
-        # Debugging 
-        print("Features", '\n', x)
-        print("Predictions", '\n', y_hat)
-
         # Calculating SSE
-        error = x.astype("float64") - y_hat 
+        error = x.astype("float64")[1:] - y_hat[:-1] 
         sse = sum(error)
 
         # return sse
