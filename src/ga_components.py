@@ -1,6 +1,12 @@
 import random 
 import numpy as np
 import pandas as pd
+import re
+
+# TODO:
+# Create a class to store all fitness methods (SSE, MSE, MAE).
+# Create a class to store all mutation methods ().
+# Create a class to store all crossover methods.
 
 
 
@@ -35,7 +41,9 @@ class Individual:
             Calculates the sum of squared error of the individual.
 
             Inputs:
-                x(pd.Series): 
+                x(pd.Series): features to use for the predictions.
+            Outputs:
+                float: indicating the sum of squared error.
         """
         # Making predictions.
         y_hat = eval(self._genotype)
@@ -47,8 +55,18 @@ class Individual:
         # return sse
         return sse
         
-    def _mutate(self):
-        pass
+    def _mutate(self, p_mutation = 5):
+        """
+        """
+
+        # Finding all constants and exponets in the ecuation.
+        constants = re.findall("[-+] [0-9]", self._genotype)
+        explonets = re.findall("x\*\*\s*([+-]?\d+(?:\.\d+)?)", self._genotype)
+
+        if random.randint(0, 100) <= p_mutation:
+            pass 
+
+        
 
     def get_genotype(self):
         return self._genotype
