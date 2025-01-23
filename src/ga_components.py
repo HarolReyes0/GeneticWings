@@ -26,7 +26,7 @@ class FitnessScoreMethods:
         """
         y_hat = eval(f)
 
-        return x.astype("float64")[1:] - y_hat[:-1]
+        return x.astype("float64") - y_hat
     
     def _sse(self, x: np.array, f: str) -> float:
         """
@@ -43,8 +43,8 @@ class FitnessScoreMethods:
             float: The calculated Sum of Squared Errors.
         """
         error = self._make_predictions(x, f)
-        
-        return sum(np.square(error))
+
+        return sum(np.square(error[1:-1]))
     
     def _mse(self, x: np.array, f: str) -> float:
         """
@@ -62,7 +62,7 @@ class FitnessScoreMethods:
         """
         error = self._make_predictions(x, f)
         
-        return np.mean(np.square(error))
+        return np.mean(np.square(error[1:-1]))
     
     def _mae(self, x: np.array, f: str) -> float:
         """
@@ -80,17 +80,24 @@ class FitnessScoreMethods:
         """
         error = self._make_predictions(x, f)
         
-        return np.mean(np.abs(error))
+        return np.mean(np.abs(error[1:-1]))
+    
+    @staticmethod
+    def _fitness_not_found(*args):
+        """
+            Raises an error.
+        """
+        raise ValueError("Evaluation metric not found.")
 
 
-class Individual:
+class Individual(FitnessScoreMethods):
     def __init__(self, genotype = ''):
         self._genotype = genotype
         self.__fitness_score = []
 
     def _create_genotype(self):
         """
-            Randomly creates the ecuation that will be use as the genotype.
+            Randomly creates the equation that will be use as the genotype.
 
             Inputs:
                 None
@@ -100,41 +107,46 @@ class Individual:
 
         n_terms = random.randint(1, 10)
 
-        # Randomly creating the the ecuation that'll be use as genotype.
+        # Randomly creating the the equation that'll be use as genotype.
         for _ in range(n_terms):
             constant = random.randint(1, 9)
             operator = random.choice(['-', '+'])
-            exponet = random.randint(-9, 9)
-            term = f'{operator} {constant} * x**{np.float64(exponet)} '
+            exponent = random.randint(-9, 9)
+            term = f'{operator} {constant} * x**{np.float64(exponent)} '
 
             self._genotype += term
 
-    def _calculate_fitness(self, x: pd.Series) -> float:
+    def _calculate_fitness(self, x: pd.Series, method = 'sse') -> float:
         """
-            Calculates the sum of squared error of the individual.
+            Based on the user preferences an evaluation method that will be used as fitness score.
+            The available options are: 
+                Mean Absolute Error(MAE)
+                Mean Squared Error (MSE)
+                Sum of Squared Error (SSE)
 
             Inputs:
                 x(pd.Series): features to use for the predictions.
+                method(str): metric that will be use to evaluate the fitness score.
             Outputs:
                 float: indicating the sum of squared error.
         """
-        # Making predictions.
-        y_hat = eval(self._genotype)
+        methods = {
+                    'sse' : self._sse,
+                    'mse' : self._mse,
+                    'mae' : self._mae,
+                    }
 
-        # Calculating SSE
-        error = x.astype("float64")[1:] - y_hat[:-1] 
-        sse = sum(error)
+        method = methods.get(method.lower(), self._fitness_not_found)
 
-        # return sse
-        return sse
+        return method(x, self._genotype)
         
     def _mutate(self, p_mutation = 5):
         """
         """
 
-        # Finding all constants and exponets in the ecuation.
+        # Finding all constants and exponents in the equation.
         constants = re.findall("[-+] [0-9]", self._genotype)
-        explonets = re.findall("x\*\*\s*([+-]?\d+(?:\.\d+)?)", self._genotype)
+        exponents = re.findall("x\*\*\s*([+-]?\d+(?:\.\d+)?)", self._genotype)
 
         if random.randint(0, 100) <= p_mutation:
             pass 
