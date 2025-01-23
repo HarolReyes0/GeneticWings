@@ -1,25 +1,29 @@
-import unittest
+import pytest
 import numpy as np
-from src.GAComponents import FitnessScoreMethods 
+from src.GAComponents import FitnessScoreMethods
 
-class TestFitnessScoreMethods(unittest.TestCase):
-    def setUp(self):
-        self.fitness_methods = FitnessScoreMethods()
+# TODO: Fix importation bug. 
 
-    def test_make_predictions(self):
-        # Define the input array and the equation as a string
-        x = np.array([1, 2, 3, 4, 5])
-        equation = "4*x**2 - 3*x**3"  # Example equation
+@pytest.mark.parametrize(
+    "x, equation",
+    [
+        ([1, 2, 3, 4, 5], "4*x**2 - 3*x**3")
+    ]
+)
+def test_make_predictions(x, equation):
+    # Initialize the FitnessScoreMethods object
+    fitness_methods = FitnessScoreMethods()
 
-        # Compute expected predictions using the equation
-        y_hat = eval(equation)
-        expected_output = x.astype("float64") - y_hat
+    # Convert input to numpy array
+    x = np.array(x)
 
-        # Run the method
-        result = self.fitness_methods._make_predictions(x, equation)
+    # Compute expected predictions using the equation
+    y_hat = eval(equation)
+    expected_output = x.astype("float64") - y_hat
 
-        # Assert the result matches the expected output
-        np.testing.assert_array_almost_equal(result, expected_output)
+    # Run the method
+    result = fitness_methods._make_predictions(x, equation)
 
-if __name__ == "__main__":
-    unittest.main()
+    # Assert the result matches the expected output
+    np.testing.assert_array_almost_equal(result, expected_output)
+
