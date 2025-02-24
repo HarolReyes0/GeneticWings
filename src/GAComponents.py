@@ -8,6 +8,9 @@ import re
 # Create a class to store all crossover methods.
 
 class FitnessScoreMethods:
+    # Calculates the error between the predicted values and the target values.
+    calculate_error = lambda x, y_hat: x.astype("float64") - y_hat
+
     def _make_predictions(self, x: np.array, f: str) -> np.array:
         """
             Generate predictions based on a given function.
@@ -26,7 +29,7 @@ class FitnessScoreMethods:
         """
         y_hat = eval(f)
 
-        return x.astype("float64") - y_hat
+        return y_hat
     
     def _sse(self, x: np.array, f: str) -> float:
         """
@@ -42,7 +45,9 @@ class FitnessScoreMethods:
             Returns:
             float: The calculated Sum of Squared Errors.
         """
-        error = self._make_predictions(x, f)
+        y_hat = self._make_predictions(x, f)
+
+        error = calculate_error(x.astype("float64"), y_hat)
 
         return sum(np.square(error[1:-1]))
     
@@ -60,7 +65,9 @@ class FitnessScoreMethods:
             Returns:
             float: The calculated Mean Squared Error.
         """
-        error = self._make_predictions(x, f)
+        y_hat = self._make_predictions(x, f)
+
+        error = calculate_error(x.astype("float64"), y_hat)
         
         return np.mean(np.square(error[1:-1]))
     
@@ -78,7 +85,9 @@ class FitnessScoreMethods:
             Returns:
             float: The calculated Mean Absolute Error.
         """
-        error = self._make_predictions(x, f)
+        y_hat = self._make_predictions(x, f)
+
+        error = calculate_error(x.astype("float64"), y_hat)
         
         return np.mean(np.abs(error[1:-1]))
     
